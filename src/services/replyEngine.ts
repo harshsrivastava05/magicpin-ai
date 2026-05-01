@@ -59,7 +59,7 @@ export const parseReplyIntent = (
   }
 
   // Explicit commitment transition
-  if (lowerMsg.includes("let's do it")) {
+  if (lowerMsg.includes("let's do it") || lowerMsg.includes("lets do it")) {
     return {
       action: 'send',
       body: "Great. Drafting your patient WhatsApp now — 90 seconds. I'll also pre-fill the GBP post for tomorrow 10am. Reply CONFIRM to send the WhatsApp draft to your patient list (40 high-risk adult patients).",

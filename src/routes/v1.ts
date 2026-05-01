@@ -18,11 +18,11 @@ v1Router.get('/healthz', (req, res) => {
 
 v1Router.get('/metadata', (req, res) => {
   res.json({
-    team_name: "Antigravity",
-    team_members: ["Antigravity"],
-    model: "deterministic-rule-engine",
-    approach: "rule-based composition and scoring",
-    contact_email: "antigravity@example.com",
+    team_name: "Harsh",
+    team_members: ["Harsh Srivastava"],
+    model: "Gemini 2.5 Flash", 
+    approach: "LLM-based intent understanding and multi-stage scoring",
+    contact_email: "harshsrivastava8704@gmail.com",
     version: "1.0.0",
     submitted_at: new Date().toISOString()
   });
