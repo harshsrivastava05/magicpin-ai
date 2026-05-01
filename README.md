@@ -1,6 +1,9 @@
 # magicpin AI Challenge — Vera (Merchant AI Assistant)
 
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/harshsrivastava05/magicpin-ai)
+[![Live Deployment](https://img.shields.io/badge/Live-Deployment-success?logo=render)](https://magicpin-ai-alzc.onrender.com/v1/metadata)
+
+> **Live API Base URL:** `https://magicpin-ai-alzc.onrender.com`
 
 This repository contains the backend implementation for the **magicpin AI Challenge**. The objective is to build a deterministic, event-driven messaging decision system that engages and assists merchants on WhatsApp, mimicking the functionality of "Vera" (magicpin's merchant-AI assistant), but faster, more structured, and free of typical LLM hallucinations.
 
