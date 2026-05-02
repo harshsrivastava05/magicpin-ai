@@ -103,7 +103,7 @@ def print_score_bar(dimension: str, score: int, max_score: int = 10):
     bar_filled = int((score / max_score) * 20)
     bar_empty = 20 - bar_filled
     color = Colors.GREEN if score >= 7 else Colors.YELLOW if score >= 4 else Colors.RED
-    print(f"  {dimension:22} [{color}{'█' * bar_filled}{Colors.DIM}{'░' * bar_empty}{Colors.RESET}] {color}{score:2}/{max_score}{Colors.RESET}")
+    print(f"  {dimension:22} [{color}{'#' * bar_filled}{Colors.DIM}{'.' * bar_empty}{Colors.RESET}] {color}{score:2}/{max_score}{Colors.RESET}")
 
 def print_reason(text: str):
     wrapped = text[:200] + "..." if len(text) > 200 else text
@@ -219,13 +219,18 @@ class GeminiProvider(LLMProvider):
         full_prompt = f"{system}\n\n{prompt}" if system else prompt
         body = json.dumps({
             "contents": [{"parts": [{"text": full_prompt}]}],
-            "generationConfig": {"temperature": 0.2, "maxOutputTokens": 1500}
+            "generationConfig": {
+                "temperature": 0.2, 
+                "responseMimeType": "application/json"
+            }
         }).encode("utf-8")
 
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent?key={self.api_key}"
         req = urlrequest.Request(url, data=body, headers={"Content-Type": "application/json"})
         resp = urlrequest.urlopen(req, timeout=TIMEOUT_LLM)
         data = json.loads(resp.read().decode("utf-8"))
+        if data.get("candidates") and data["candidates"][0].get("finishReason") != "STOP":
+            print(f"Gemini Finish Reason: {data['candidates'][0].get('finishReason')}")
         return data["candidates"][0]["content"]["parts"][0]["text"]
 
 
@@ -542,6 +547,7 @@ Score each dimension 0-10 with clear reasoning. Be STRICT."""
         """Parse LLM JSON response."""
         match = re.search(r'\{[\s\S]*\}', response)
         if not match:
+            print_warn(f"No JSON found in response: {response}")
             return self._fallback_score(action)
 
         try:
@@ -561,7 +567,7 @@ Score each dimension 0-10 with clear reasoning. Be STRICT."""
             )
             return result
         except Exception as e:
-            print_warn(f"Parse error: {e}")
+            print_warn(f"Parse error: {e}. Raw response: {response}")
             return self._fallback_score(action)
 
     def _fallback_score(self, action: Dict) -> ScoreResult:
