@@ -37,7 +37,7 @@ LLM_MODEL = "gemini-2.5-flash"  # <-- Optional: specify model or leave empty for
 OLLAMA_URL = "http://localhost:11434"
 
 # Which test to run by default
-TEST_SCENARIO = "all"
+TEST_SCENARIO = "full_evaluation"
 
 # =============================================================================
 # ██████  END OF CONFIGURATION - DON'T EDIT BELOW THIS LINE ██████
@@ -423,7 +423,7 @@ class BotClient:
         })
 
     def tick(self, triggers):
-        return self._request("POST", "/v1/tick", 15, {
+        return self._request("POST", "/v1/tick", 30, {
             "now": datetime.utcnow().isoformat() + "Z", "available_triggers": triggers
         })
 

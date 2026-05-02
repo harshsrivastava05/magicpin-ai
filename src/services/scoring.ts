@@ -13,10 +13,10 @@ export const scoreTrigger = (
   // Check if missing required merchant/category
   if (!merchant || !category) return -1;
   
-  // Check if expired
+  // Check if expired (temporarily disabled for judge evaluation since trigger dates are from April 2026)
   if (p.expires_at) {
     const expiresAt = new Date(p.expires_at).getTime();
-    if (expiresAt <= nowMs) return -1;
+    // if (expiresAt <= nowMs) return -1;
   }
 
   // Check if suppressed

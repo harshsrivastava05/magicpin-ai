@@ -3,7 +3,7 @@ import { scoreTrigger } from './scoring';
 import { compose } from './composeEngine';
 import { suppress } from './suppression';
 
-export const processTick = (nowIso: string, availableTriggers: string[]) => {
+export const processTick = async (nowIso: string, availableTriggers: string[]) => {
   const nowMs = new Date(nowIso).getTime();
   const scoredTriggers = [];
 
@@ -43,14 +43,14 @@ export const processTick = (nowIso: string, availableTriggers: string[]) => {
   // Sort descending by score
   scoredTriggers.sort((a, b) => b.score - a.score);
 
-  // Take top 20
-  const selected = scoredTriggers.slice(0, 20);
-  const actions = [];
+  // Take top 5 to avoid LLM rate limits on concurrent requests
+  const selected = scoredTriggers.slice(0, 5);
+  
+  // Compose actions simultaneously to save time
+  const composePromises = selected.map(item => compose(item.category, item.merchant, item.trigger, item.customer));
+  const actions = await Promise.all(composePromises);
 
-  for (const item of selected) {
-    const action = compose(item.category, item.merchant, item.trigger, item.customer);
-    actions.push(action);
-    
+  for (const action of actions) {
     // Mark as suppressed
     const supKey = action.suppression_key;
     if (supKey) {

@@ -57,14 +57,14 @@ const tickSchema = z.object({
   available_triggers: z.array(z.string())
 });
 
-v1Router.post('/tick', (req, res) => {
+v1Router.post('/tick', async (req, res) => {
   const parseResult = tickSchema.safeParse(req.body);
   if (!parseResult.success) {
     return res.status(400).json({ error: 'invalid payload' });
   }
 
   const { now, available_triggers } = parseResult.data;
-  const result = processTick(now, available_triggers);
+  const result = await processTick(now, available_triggers);
 
   return res.status(200).json(result);
 });
