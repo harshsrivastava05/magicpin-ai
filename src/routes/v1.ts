@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { getCounts, upsertContext, Scope } from '../services/contextStore';
 import { processTick } from '../services/tickEngine';
-import { parseReplyIntent } from '../services/replyEngine';
+import { parseReplyIntent, ReplyInput } from '../services/replyEngine';
 
 export const v1Router = Router();
 
@@ -85,8 +85,16 @@ v1Router.post('/reply', (req, res) => {
     return res.status(400).json({ error: 'invalid payload' });
   }
 
-  const { message, turn_number } = parseResult.data;
-  const action = parseReplyIntent(message, turn_number);
+  const replyInput: ReplyInput = {
+    conversation_id: parseResult.data.conversation_id,
+    merchant_id: parseResult.data.merchant_id,
+    customer_id: parseResult.data.customer_id,
+    from_role: parseResult.data.from_role,
+    message: parseResult.data.message,
+    received_at: parseResult.data.received_at,
+    turn_number: parseResult.data.turn_number
+  };
+  const action = parseReplyIntent(replyInput);
 
   return res.status(200).json(action);
 });

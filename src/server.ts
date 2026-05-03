@@ -25,7 +25,7 @@ function preloadCustomers() {
       const data = JSON.parse(fs.readFileSync(seedPath, 'utf-8'));
       const customers = data.customers || [];
       for (const c of customers) {
-        upsertContext('customer', c.customer_id, 1, c);
+        upsertContext('customer', c.customer_id, 0, c);
       }
       logger.info(`Pre-loaded ${customers.length} customers from seed`);
     }
@@ -37,7 +37,7 @@ function preloadCustomers() {
       for (const file of files) {
         const c = JSON.parse(fs.readFileSync(path.join(expandedDir, file), 'utf-8'));
         const cid = c.customer_id || file.replace('.json', '');
-        upsertContext('customer', cid, 1, c);
+        upsertContext('customer', cid, 0, c);
       }
       logger.info(`Pre-loaded ${files.length} expanded customers`);
     }
@@ -50,6 +50,15 @@ preloadCustomers();
 
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   logger.info(`Server listening on port ${PORT}`);
+});
+
+server.on('error', (err: NodeJS.ErrnoException) => {
+  if (err.code === 'EADDRINUSE') {
+    logger.error(`Port ${PORT} is already in use! Kill the old process first: taskkill /F /PID $(netstat -ano | findstr :${PORT})`);
+  } else {
+    logger.error(`Server error: ${err.message}`);
+  }
+  process.exit(1);
 });

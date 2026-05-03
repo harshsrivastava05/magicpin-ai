@@ -50,3 +50,15 @@ export const getCounts = () => {
 export const getAllTriggers = () => {
   return Array.from(triggerStore.values());
 };
+
+export const getAllMerchants = () => {
+  return Array.from(merchantStore.values());
+};
+
+export const getAllCategories = () => {
+  return Array.from(categoryStore.values());
+};
+
+export const getStoreMap = (scope: Scope) => {
+  return getStore(scope);
+};

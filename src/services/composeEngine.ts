@@ -269,7 +269,7 @@ function buildFallbackMessage(c: any, m: any, t: any, tPayload: any, cust: any, 
       const focus = tPayload.previous_focus?.replace(/_/g, ' ') || '';
       const activeOffer = m.offers?.find((o: any) => o.status === 'active');
       const ownerName = m.identity?.owner_first_name || '';
-      body = `Hi ${custName} 👋 ${ownerName} from ${merchantName} here. It's been about ${Math.round((daysSince as number) / 7)} weeks — happens to everyone, no judgment.${focus ? ` We have new options that fit ${focus} goals well.` : ''} ${activeOffer ? activeOffer.title + '.' : ''} Want me to hold a free trial spot for you? Reply YES — no commitment.`;
+      body = `Hi ${custName}, ${ownerName} from ${merchantName} here. It's been about ${Math.round((daysSince as number) / 7)} weeks — happens to everyone, no judgment.${focus ? ` We have new options that fit ${focus} goals well.` : ''} ${activeOffer ? activeOffer.title + '.' : ''} Want me to hold a free trial spot for you? Reply YES — no commitment.`;
       cta = 'binary_yes_no';
       rationale = `Lapsed customer winback with no-shame framing. ${focus ? `References their past focus (${focus}).` : ''} Low-friction single CTA.`;
       break;
@@ -318,7 +318,7 @@ function buildFallbackMessage(c: any, m: any, t: any, tPayload: any, cust: any, 
       const daysToWedding = tPayload.days_to_wedding || '?';
       const nextStep = tPayload.next_step_window_open?.replace(/_/g, ' ') || 'next step';
       const ownerName = m.identity?.owner_first_name || '';
-      body = `Hi ${custName} 💍 ${ownerName} from ${merchantName} here. ${daysToWedding} days to your wedding — perfect window to start the ${nextStep}. Want me to block your preferred slot for the first session?`;
+      body = `Hi ${custName}, ${ownerName} from ${merchantName} here. ${daysToWedding} days to your wedding — perfect window to start the ${nextStep}. Want me to block your preferred slot for the first session?`;
       cta = 'binary_yes_no';
       rationale = `Bridal followup with wedding countdown. Urgency (window) + relationship continuity.`;
       break;

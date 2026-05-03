@@ -1,4 +1,4 @@
-import { getContext } from './contextStore';
+import { getContext, ContextItem } from './contextStore';
 import { scoreTrigger } from './scoring';
 import { compose } from './composeEngine';
 import { suppress } from './suppression';
@@ -17,12 +17,23 @@ export const processTick = async (nowIso: string, availableTriggers: string[]) =
     const merchant = getContext('merchant', payload.merchant_id);
     if (!merchant || !merchant.payload) continue;
 
-    // Try to find category slug from merchant, then from trigger payload
-    const categorySlug = merchant.payload.category_slug || payload.payload?.category || payload.category;
-    if (!categorySlug) continue;
+    // Resolve category slug from multiple sources — merchant first, then trigger payload
+    const categorySlug = merchant.payload.category_slug
+      || payload.payload?.category
+      || payload.category
+      || merchant.payload.identity?.category;
 
-    const category = getContext('category', categorySlug);
-    if (!category) continue;
+    // Build a fallback category if we can't find one in the store
+    let category = categorySlug ? getContext('category', categorySlug) : undefined;
+
+    // If no category found, create a minimal fallback so we don't skip triggers
+    if (!category) {
+      category = {
+        context_id: categorySlug || 'unknown',
+        version: 0,
+        payload: { slug: categorySlug || 'unknown' }
+      } as ContextItem;
+    }
 
     let customer;
     if (payload.customer_id) {
